@@ -18,6 +18,14 @@
         "entryPath": "/test-resources"
       },
       "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/IKH",
+      "target": {
+        "type": "destination",
+        "name": "IKH"
+      },
+      "description": "IKH Infothek"
     }
   ],
   "sendWelcomeFileRedirect": true

@@ -12,6 +12,16 @@
 		"sourceTemplate": {
 			"id": "ui5template.basicSAPUI5ApplicationProject",
 			"version": "1.40.12"
+		},
+		"dataSources": {
+			"MW_Challenge": {
+				"uri": "/IKH/q_perior/mw_challenge/services/MW_Challenge.xsodata",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/metadata.xml"
+				}
+			}
 		}
 	},
 
@@ -40,7 +50,7 @@
 
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "qperior.mw_challenge.mw_challenge.view.View1",
+			"viewName": "qperior.mw_challenge.mw_challenge.view.Startpage",
 			"type": "XML"
 		},
 		"dependencies": {
@@ -60,6 +70,12 @@
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
 					"bundleName": "qperior.mw_challenge.mw_challenge.i18n.i18n"
+				}
+			},
+			"": {
+				"dataSource": "MW_Challenge",
+				"settings": {
+					"defaultBindingMode": "TwoWay"
 				}
 			}
 		},
@@ -89,7 +105,7 @@
 					"viewType": "XML",
 					"transition": "slide",
 					"clearControlAggregation": false,
-					"viewName": "View1"
+					"viewName": "Startpage"
 				}
 			}
 		}
