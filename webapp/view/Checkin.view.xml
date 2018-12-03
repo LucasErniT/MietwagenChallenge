@@ -1,0 +1,97 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:ux="sap.uxap" xmlns:form="sap.ui.layout.form"
+	xmlns:l="sap.ui.layout" xmlns:f="sap.f" xmlns:personal="sap.uxap.sample.SharedBlocks.personal"
+	controllerName="qperior.mw_challenge.mw_challenge.controller.Checkin" xmlns:html="http://www.w3.org/1999/xhtml">
+	<App>
+		<pages>
+			<Page title="Title">
+				<content>
+					<Panel>
+						<IconTabBar expanded="true" expandable="false" id="idIconTabBar2" class="sapUiResponsiveContentPadding">
+							<items>
+								<IconTabFilter id="tab1" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 1" text="Reservierungsdetails"
+									key="tab1">
+									<VBox class="sapUiSmallMargin">
+										<form:SimpleForm editable="false" layout="ResponsiveGridLayout" title="Willkommen {PM>/VORNAME} {PM>/NACHNAME}" labelSpanXL="3"
+											labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0"
+											columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
+											<form:content>
+												<Label text="Von"/>
+												<Text text="{ path: 'RM>/START_TIME', formatter: '.formatter.checkForm' }"/>
+												<Label text="Bis"/>
+												<Text text="{ path: 'RM>/END_TIME', formatter: '.formatter.checkForm' }"/>
+												<Label text="Abholort"/>
+												<Link id="idFrom" text="{FM>/BEZEICHNUNG}" press="onPressMap"/>
+												<Label text="Abgabeort"/>
+												<Link id="idTo" text="{TM>/BEZEICHNUNG}" press="onPressMap"/>
+											</form:content>
+										</form:SimpleForm>
+									</VBox>
+									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
+										<items>
+											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
+											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
+										</items> 
+									</FlexBox>
+								</IconTabFilter>
+								<IconTabSeparator icon="sap-icon://open-command-field"/>
+								<IconTabFilter id="tab2" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 2" text="Fahrzeugauswahl"
+									key="tab2" enabled="false">
+									<FlexBox height="100%" alignItems="Center" justifyContent="Center">
+										<items>
+											<l:VerticalLayout id="containerLayout" width="800px" >
+												<l:BlockLayout id="BlockLayout">
+													<l:BlockLayoutRow>
+														<l:BlockLayoutCell id="avatar0">
+															<!--<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
+																customDisplaySize="250px" displayShape="Square" press="onPressMap" id="avatarId0"></f:Avatar>-->
+															<!--<Text text="xxxxx" class="sapUiSmallMarginTop"></Text>-->
+														</l:BlockLayoutCell>
+														<l:BlockLayoutCell id="avatar1">
+																<!--<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
+																customDisplaySize="250px" displayShape="Square" id="avatarId1"></f:Avatar>-->
+															
+														</l:BlockLayoutCell>
+														<!--<l:BlockLayoutCell title="Mercedes Benz C200" id="avatar2">
+																<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
+																customDisplaySize="250px" displayShape="Square" id="avatarId1"></f:Avatar>
+														</l:BlockLayoutCell>-->
+													</l:BlockLayoutRow>
+												</l:BlockLayout>
+											</l:VerticalLayout>
+										</items>
+									</FlexBox>
+									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
+										<items>
+											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
+											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
+										</items>
+									</FlexBox>
+								</IconTabFilter>
+								<IconTabSeparator icon="sap-icon://open-command-field"/>
+								<IconTabFilter id="tab3" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 3" text="Versicherung" key="tab3"
+									enabled="false">
+									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
+										<items>
+											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
+											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
+										</items>
+									</FlexBox>
+								</IconTabFilter>
+								<IconTabSeparator icon="sap-icon://open-command-field"/>
+								<IconTabFilter id="tab4" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 4" text="Zubehörauswahl" key="tab4"
+									enabled="false">
+									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
+										<items>
+											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
+											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
+										</items>
+									</FlexBox>
+								</IconTabFilter>
+							</items>
+						</IconTabBar>
+					</Panel>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

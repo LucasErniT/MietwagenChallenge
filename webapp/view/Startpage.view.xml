@@ -5,7 +5,7 @@
 			<Page title="{i18n>title}">
 				<content>
 					<List headerText="Reservierungen" items="{/RESERVIERUNG}">
-						<ActionListItem text="Reservierung #{RESERVIERUNG_ID}"/>
+						<ActionListItem text="Reservierung #{RESERVIERUNG_ID}" press="onSelectReservation"/>
 					</List>
 				</content>
 			</Page>

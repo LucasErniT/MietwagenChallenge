@@ -24,7 +24,6 @@
 			}
 		}
 	},
-
 	"sap.ui": {
 		"technology": "UI5",
 		"icons": {
@@ -43,11 +42,9 @@
 		"supportedThemes": [
 			"sap_hcb",
 			"sap_belize"
-
 		],
 		"fullWidth": true
 	},
-
 	"sap.ui5": {
 		"rootView": {
 			"viewName": "qperior.mw_challenge.mw_challenge.view.Startpage",
@@ -80,9 +77,11 @@
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
 		},
 		"routing": {
 			"config": {
@@ -95,17 +94,36 @@
 				"clearControlAggregation": false,
 				"fullWidth": true
 			},
-			"routes": [{
-				"name": "RouteView1",
-				"pattern": "RouteView1",
-				"target": ["TargetView1"]
-			}],
+			"routes": [
+				{
+					"name": "Startpage",
+					"pattern": "Startpage",
+					"target": [
+						"Startpage"
+					]
+				},
+				{
+					"name": "Checkin",
+					"pattern": "Checkin",
+					"target": [
+						"Checkin"
+					]
+				}
+			],
 			"targets": {
-				"TargetView1": {
+				"Startpage": {
 					"viewType": "XML",
 					"transition": "slide",
 					"clearControlAggregation": false,
 					"viewName": "Startpage"
+				},
+				"Checkin": {
+					"viewType": "XML",
+					"viewName": "Checkin"
+				},
+				"Base": {
+					"viewType": "XML",
+					"viewName": "Base"
 				}
 			}
 		}
