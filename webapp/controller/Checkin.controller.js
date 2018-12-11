@@ -71,18 +71,24 @@ sap.ui.define([
 							displaySize: "Custom",
 							customDisplaySize: "200px",
 							press: function () {
-								self.onPressMap(undefined, true);
+								alert("Hello");
 							}
 						});
 
 						var sText = oResultSet[i].BESCHREIBUNG.substring(0, 200) + "...";
 						var oText = new sap.m.Text({
 							text: sText,
-							width: "200px"
+							width: "200px",
+							press: function() {
+								alert("Hello");
+							}
 						});
 						
 						var oButton = new sap.m.Button({
-							text: "Dieses Fahrzeug auswählen!"
+							text: "Dieses Fahrzeug auswählen!",
+							press: function() {
+								alert("Hello");
+							}
 						});
 
 						// placing it into our view
@@ -108,12 +114,7 @@ sap.ui.define([
 			});
 		},
 
-		onPressMap: function (oEvent, bindingMode) {
-
-			if (bindingMode) {
-				return;
-			}
-
+		onPressMap: function (oEvent) {
 			var sModel = oEvent.getSource().getId().indexOf("From") > 0 ? "FM" : "TM";
 			var oModel = this.getView().getModel(sModel).getData();
 			var iLong = oModel.LONG;

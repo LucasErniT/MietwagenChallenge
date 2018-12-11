@@ -30,7 +30,7 @@
 										<items>
 											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
 											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
-										</items> 
+										</items>
 									</FlexBox>
 								</IconTabFilter>
 								<IconTabSeparator icon="sap-icon://open-command-field"/>
@@ -38,7 +38,7 @@
 									key="tab2" enabled="false">
 									<FlexBox height="100%" alignItems="Center" justifyContent="Center">
 										<items>
-											<l:VerticalLayout id="containerLayout" width="800px" >
+											<l:VerticalLayout id="containerLayout" width="800px">
 												<l:BlockLayout id="BlockLayout">
 													<l:BlockLayoutRow>
 														<l:BlockLayoutCell id="avatar0">
@@ -47,9 +47,8 @@
 															<!--<Text text="xxxxx" class="sapUiSmallMarginTop"></Text>-->
 														</l:BlockLayoutCell>
 														<l:BlockLayoutCell id="avatar1">
-																<!--<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
+															<!--<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
 																customDisplaySize="250px" displayShape="Square" id="avatarId1"></f:Avatar>-->
-															
 														</l:BlockLayoutCell>
 														<!--<l:BlockLayoutCell title="Mercedes Benz C200" id="avatar2">
 																<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
@@ -70,6 +69,34 @@
 								<IconTabSeparator icon="sap-icon://open-command-field"/>
 								<IconTabFilter id="tab3" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 3" text="Versicherung" key="tab3"
 									enabled="false">
+									<Panel expandable="true" expanded="true" headerText="Aktuelle Versicherung" width="auto" class="sapUiResponsiveMargin">
+										<content>
+											<VBox class="sapUiSmallMargin">
+												<form:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
+													adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+													singleContainerFullSize="false">
+													<form:content>
+														<Label text="Ihre aktuelle Versicherung:"/>
+														<Text text="1200 Selbstbehalt"/>
+													</form:content>
+												</form:SimpleForm>
+											</VBox>
+										</content>
+									</Panel>
+									<Panel expandable="true" expanded="true" headerText="Updgrade M" width="auto" class="sapUiResponsiveMargin">
+										<content>
+											<VBox class="sapUiSmallMargin">
+												<form:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
+													adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
+													singleContainerFullSize="false">
+													<form:content>
+														<Label text="Ihre aktuelle Versicherung:"/>
+														<Text text="1200 Selbstbehalt"/>
+													</form:content>
+												</form:SimpleForm>
+											</VBox>
+										</content>
+									</Panel>
 									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
 										<items>
 											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
