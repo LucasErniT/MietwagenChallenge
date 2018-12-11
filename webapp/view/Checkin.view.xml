@@ -40,21 +40,19 @@
 										<items>
 											<l:VerticalLayout id="containerLayout" width="800px">
 												<l:BlockLayout id="BlockLayout">
-													<l:BlockLayoutRow>
-														<l:BlockLayoutCell id="avatar0">
-															<!--<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
-																customDisplaySize="250px" displayShape="Square" press="onPressMap" id="avatarId0"></f:Avatar>-->
-															<!--<Text text="xxxxx" class="sapUiSmallMarginTop"></Text>-->
-														</l:BlockLayoutCell>
-														<l:BlockLayoutCell id="avatar1">
-															<!--<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
-																customDisplaySize="250px" displayShape="Square" id="avatarId1"></f:Avatar>-->
-														</l:BlockLayoutCell>
-														<!--<l:BlockLayoutCell title="Mercedes Benz C200" id="avatar2">
-																<f:Avatar src="https://abouttravel.ch/wp-content/uploads/2016/08/Flughafen-Z%C3%BCrich-Busdach-696x385.png" displaySize="Custom"
-																customDisplaySize="250px" displayShape="Square" id="avatarId1"></f:Avatar>
-														</l:BlockLayoutCell>-->
-													</l:BlockLayoutRow>
+													<l:BlockLayoutRow id="initialCarRow"></l:BlockLayoutRow>
+												</l:BlockLayout>
+											</l:VerticalLayout>
+										</items>
+									</FlexBox>
+																		<VBox class="sapUiSmallMargin">
+										<form:SimpleForm title="Upselling"></form:SimpleForm>
+									</VBox>
+									<FlexBox height="100%" alignItems="Center" justifyContent="Center">
+										<items>
+											<l:VerticalLayout width="800px">
+												<l:BlockLayout>
+													<l:BlockLayoutRow id="upsellCarRow"></l:BlockLayoutRow>
 												</l:BlockLayout>
 											</l:VerticalLayout>
 										</items>
