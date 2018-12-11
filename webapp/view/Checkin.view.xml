@@ -46,7 +46,7 @@
 										</items>
 									</FlexBox>
 																		<VBox class="sapUiSmallMargin">
-										<form:SimpleForm title="Upselling"></form:SimpleForm>
+										<form:SimpleForm title="Wir haben heute folgende Angebote für Sie - Sparen Sie Geld beim Upgrage!"></form:SimpleForm>
 									</VBox>
 									<FlexBox height="100%" alignItems="Center" justifyContent="Center">
 										<items>

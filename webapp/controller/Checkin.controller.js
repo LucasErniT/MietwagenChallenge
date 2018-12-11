@@ -77,11 +77,9 @@ sap.ui.define([
 				for (var x = 0; x < oUpsellResultSet.length; x++) {
 					self.addInfosToTiles(oUpsellResultSet, x, "upsellCarRow", true);
 				}
-
-				//}
-				this.getView().byId("tab" + iId).setEnabled(true);
-				this.getView().byId("idIconTabBar2").setSelectedKey("tab" + iId);
 			}
+			this.getView().byId("tab" + iId).setEnabled(true);
+			this.getView().byId("idIconTabBar2").setSelectedKey("tab" + iId);
 		},
 
 		addInfosToTiles: function (oResultSet, iIndex, oElement, bIsUpselling) {
@@ -107,10 +105,7 @@ sap.ui.define([
 			var sText = oResultSet[i].BESCHREIBUNG.substring(0, 200) + "...";
 			var oText = new sap.m.Text({
 				text: sText,
-				width: "200px",
-				press: function () {
-					alert("Hello");
-				}
+				width: "200px"
 			});
 
 			var oButton = new sap.m.Button({
@@ -207,10 +202,11 @@ sap.ui.define([
 		onReturnBack: function () {
 			var sId = this.getView().byId("idIconTabBar2").getSelectedKey();
 			var iId = parseInt(sId.slice(-1), 10) - 1;
-
-			if (sId === "tab1") {
+			if (sId === "tab2") {
 				this.getView().byId("upsellCarRow").removeAllContent();
 				this.getView().byId("initialCarRow").removeAllContent();
+			}
+			if (sId === "tab1") {
 				this.getView().getModel("CM").setData(null);
 				this.getView().getModel("initCM").setData(null);
 				this.getView().getModel("upCM").setData(null);
