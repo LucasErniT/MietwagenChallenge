@@ -2,7 +2,7 @@
 	xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
 	<App id="idAppControl">
 		<pages>
-			<Page title="{i18n>title}">
+			<Page title="Willkommen - Wählen Sie bitte eine Reservierung aus">
 				<content>
 					<List headerText="Reservierungen" items="{/RESERVIERUNG}">
 						<ActionListItem text="Reservierung #{RESERVIERUNG_ID}" press="onSelectReservation"/>

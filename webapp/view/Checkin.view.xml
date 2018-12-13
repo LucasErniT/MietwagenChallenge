@@ -3,7 +3,7 @@
 	controllerName="qperior.mw_challenge.mw_challenge.controller.Checkin" xmlns:html="http://www.w3.org/1999/xhtml">
 	<App>
 		<pages>
-			<Page title="Title">
+			<Page title="Check-In">
 				<content>
 					<Panel>
 						<IconTabBar expanded="true" expandable="false" id="idIconTabBar2" class="sapUiResponsiveContentPadding">
@@ -28,7 +28,7 @@
 									</VBox>
 									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
 										<items>
-											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
+											<Button icon="sap-icon://nav-back" text="Zurück" press="onReturnBack"/>
 											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
 										</items>
 									</FlexBox>
@@ -36,7 +36,7 @@
 								<IconTabSeparator icon="sap-icon://open-command-field"/>
 								<IconTabFilter id="tab2" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 2" text="Fahrzeugauswahl"
 									key="tab2" enabled="false">
-									<FlexBox height="100%" alignItems="Center" justifyContent="Center">
+									<FlexBox height="100%" alignItems="Stretch" justifyContent="Center" width="100%" class="columns">
 										<items>
 											<l:VerticalLayout id="containerLayout" width="800px">
 												<l:BlockLayout id="BlockLayout">
@@ -45,10 +45,10 @@
 											</l:VerticalLayout>
 										</items>
 									</FlexBox>
-																		<VBox class="sapUiSmallMargin">
+									<VBox class="sapUiSmallMargin">
 										<form:SimpleForm title="Wir haben heute folgende Angebote für Sie - Sparen Sie Geld beim Upgrage!"></form:SimpleForm>
 									</VBox>
-									<FlexBox height="100%" alignItems="Center" justifyContent="Center">
+									<FlexBox height="100%" alignItems="Stretch" justifyContent="Center" width="100%" class="columns">
 										<items>
 											<l:VerticalLayout width="800px">
 												<l:BlockLayout>
@@ -59,7 +59,7 @@
 									</FlexBox>
 									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
 										<items>
-											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
+											<Button icon="sap-icon://nav-back" text="Zurück" press="onReturnBack"/>
 											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
 										</items>
 									</FlexBox>
@@ -67,37 +67,24 @@
 								<IconTabSeparator icon="sap-icon://open-command-field"/>
 								<IconTabFilter id="tab3" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 3" text="Versicherung" key="tab3"
 									enabled="false">
-									<Panel expandable="true" expanded="true" headerText="Aktuelle Versicherung" width="auto" class="sapUiResponsiveMargin">
+									<Panel width="auto" class="sapUiResponsiveMargin">
+										<headerToolbar>
+											<Toolbar height="3rem">
+												<Title text="Sorglos unterwegs - Wählen Sie eine Versicherungsoption aus:"/>
+											</Toolbar>
+										</headerToolbar>
 										<content>
-											<VBox class="sapUiSmallMargin">
-												<form:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
-													adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
-													singleContainerFullSize="false">
-													<form:content>
-														<Label text="Ihre aktuelle Versicherung:"/>
-														<Text text="1200 Selbstbehalt"/>
-													</form:content>
-												</form:SimpleForm>
-											</VBox>
-										</content>
-									</Panel>
-									<Panel expandable="true" expanded="true" headerText="Updgrade M" width="auto" class="sapUiResponsiveMargin">
-										<content>
-											<VBox class="sapUiSmallMargin">
-												<form:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12"
-													adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1"
-													singleContainerFullSize="false">
-													<form:content>
-														<Label text="Ihre aktuelle Versicherung:"/>
-														<Text text="1200 Selbstbehalt"/>
-													</form:content>
-												</form:SimpleForm>
-											</VBox>
+											<FlexBox alignItems="Center" justifyContent="Center" id="flexBoxInsuranceId1">
+												<items></items>
+											</FlexBox>
+											<FlexBox alignItems="Center" justifyContent="Center" id="flexBoxInsuranceId2">
+												<items></items>
+											</FlexBox>
 										</content>
 									</Panel>
 									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
 										<items>
-											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
+											<Button icon="sap-icon://nav-back" text="Zurück" press="onReturnBack"/>
 											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
 										</items>
 									</FlexBox>
@@ -105,10 +92,28 @@
 								<IconTabSeparator icon="sap-icon://open-command-field"/>
 								<IconTabFilter id="tab4" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 4" text="Zubehörauswahl" key="tab4"
 									enabled="false">
+									<Panel width="auto" class="sapUiResponsiveMargin">
+										<headerToolbar>
+											<Toolbar height="3rem">
+												<Title text="Wählen Sie ein Zubehör aus, indem Sie auf das Bild klicken:"/>
+											</Toolbar>
+										</headerToolbar>
+										<content>
+											<FlexBox alignItems="Center" justifyContent="Center" id="flexBoxAccessoryId1">
+												<items></items>
+											</FlexBox>
+											<FlexBox alignItems="Center" justifyContent="Center" id="flexBoxAccessoryId2">
+												<items></items>
+											</FlexBox>
+											<FlexBox alignItems="Center" justifyContent="Center" id="flexBoxAccessoryId3">
+												<items></items>
+											</FlexBox>
+										</content>
+									</Panel>
 									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
 										<items>
-											<Button icon="sap-icon://nav-back" text="Go back" press="onReturnBack"/>
-											<Button icon="sap-icon://initiative" text="Weiter" press="onNext"/>
+											<Button icon="sap-icon://nav-back" text="Zurück" press="onReturnBack"/>
+											<Button type="Accept" icon="sap-icon://complete" text="Abschliessen" press="onFinish"/>
 										</items>
 									</FlexBox>
 								</IconTabFilter>

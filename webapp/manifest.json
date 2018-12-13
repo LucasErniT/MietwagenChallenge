@@ -124,6 +124,10 @@
 				"Base": {
 					"viewType": "XML",
 					"viewName": "Base"
+				},
+				"Finish": {
+					"viewType": "XML",
+					"viewName": "Finish"
 				}
 			}
 		}

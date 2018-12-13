@@ -17,24 +17,159 @@ sap.ui.define([
 			this.getRouter().getTarget("Checkin").attachDisplay(this._onObjectMatched, this);
 		},
 
+		onSelectAccessory: function (oEvent) {
+			var iId = oEvent.getSource().getId();
+			var sImage = oEvent.getSource().getProperty("backgroundImage");
+			if (sImage.indexOf("rejected") !== -1) {
+				sap.ui.getCore().byId(iId).setBackgroundImage("img/selected.jpg");
+			} else {
+				sap.ui.getCore().byId(iId).setBackgroundImage("img/rejected.jpg");
+			}
+
+		},
+		
+		onSelectInsurance: function (oEvent) {
+			var iId = oEvent.getSource().getId();
+			var sImage = oEvent.getSource().getProperty("backgroundImage");
+			if (sImage.indexOf("rejected") !== -1) {
+				sap.ui.getCore().byId(iId).setBackgroundImage("img/selected.jpg");
+			} else {
+				sap.ui.getCore().byId(iId).setBackgroundImage("img/rejected.jpg");
+			}
+
+		},
+
 		_onObjectMatched: function (oEvent) {
+			/**
+			 *	Reservation model
+			 *	gets the reservation context and puts it as model "RM"
+			 */
 			var oRM = new sap.ui.model.json.JSONModel();
 			var oReservationContext = oEvent.getParameter("data").oContext;
 			oRM.setData(oReservationContext);
 			this.getView().setModel(oRM, "RM");
 
+			/**
+			 *	Person model
+			 *	gets the person context and puts it as model "PM"
+			 */
 			var oPM = new sap.ui.model.json.JSONModel();
 			this.getView().setModel(oPM, "PM");
 
+			/**
+			 *	Person model
+			 *	gets the person context and puts it as model "PM"
+			 */
 			var oCM = new sap.ui.model.json.JSONModel();
 			this.getView().setModel(oCM, "CM");
-			this.getView().setModel(new sap.ui.model.json.JSONModel(), "initCM");
-			this.getView().setModel(new sap.ui.model.json.JSONModel(), "upCM");
+
+			var oInitCM = new sap.ui.model.json.JSONModel();
+			this.getView().setModel(oInitCM, "initCM");
+
+			var oUpCM = new sap.ui.model.json.JSONModel();
+			this.getView().setModel(oUpCM, "upCM");
 
 			var oFM = new sap.ui.model.json.JSONModel();
 			this.getView().setModel(oFM, "FM");
+
 			var oTM = new sap.ui.model.json.JSONModel();
 			this.getView().setModel(oTM, "TM");
+
+			/** 
+				Accessory Model
+				-> get all accessories and save in model "AM"
+			*/
+			var oAM = new sap.ui.model.json.JSONModel();
+			this.getView().setModel(oAM, "AM");
+			this.getView().getModel().read("/ZUBEHOER", {
+				success: function (oData) {
+					var resultSet = oData.results;
+					this.getView().getModel("AM").setData(resultSet);
+
+					for (var i = 0; i < resultSet.length; i++) {
+						var sZubehoerId = "zubehoerId" + resultSet[i].ZUBEHOER_ID;
+						var oGenericTile = new sap.m.GenericTile({
+							id: sZubehoerId,
+							header: resultSet[i].BEZEICHNUNG,
+							frameType: "TwoByOne",
+							backgroundImage: "img/rejected.jpg",
+							press: function (oEvent) {
+								this.onSelectAccessory(oEvent);
+							}.bind(this)
+						});
+
+						var j = i + 1;
+						var oImageContent = new sap.m.ImageContent({
+							src: "img/z" + j + ".jpg",
+						});
+						var oTileContent = new sap.m.TileContent({
+							footer: "Für nur CHF " + resultSet[i].PREIS + ".- pro Tag",
+							footerColor: "Error"
+						});
+
+						oTileContent.setContent(oImageContent);
+						oGenericTile.addTileContent(oTileContent);
+						if (i < 2) {
+							this.getView().byId("flexBoxAccessoryId1").addItem(oGenericTile);
+						} else if (i > 1 && i < 4) {
+							this.getView().byId("flexBoxAccessoryId2").addItem(oGenericTile);
+						} else {
+							this.getView().byId("flexBoxAccessoryId3").addItem(oGenericTile);
+						}
+
+					}
+
+				}.bind(this),
+				error: function (e) {}
+			});
+			
+			/*
+			Insurance Model
+			-> get all insurance and save in model "IM"
+			*/
+			var oIM = new sap.ui.model.json.JSONModel();
+			this.getView().setModel(oIM, "IM");
+			
+			this.getView().getModel().read("/VERSICHERUNGEN", {
+				success: function (oData) {
+					var resultSet = oData.results;
+					this.getView().getModel("IM").setData(resultSet);
+
+					for (var i = 0; i < resultSet.length; i++) {
+						var sVersicherungId = "versicherungId" + resultSet[i].VERSICHERUNG_ID;
+						var oGenericTile = new sap.m.GenericTile({
+							id: sVersicherungId,
+							header: resultSet[i].VERSICHERUNG_ID,
+							frameType: "TwoByOne",
+							backgroundImage: "img/rejected.jpg",
+							press: function (oEvent) {
+								this.onSelectInsurance(oEvent);
+							}.bind(this)
+						});
+
+						var j = i + 1;
+						var oImageContent = new sap.m.ImageContent({
+							src: "img/insurance" + j + ".jpg",
+						});
+						var oTileContent = new sap.m.TileContent({
+							footer: "Für nur CHF " + resultSet[i].PREIS + ".- pro Tag",
+							footerColor: "Error"
+						});
+
+						oTileContent.setContent(oImageContent);
+						oGenericTile.addTileContent(oTileContent);
+						if (i < 2) {
+							this.getView().byId("flexBoxInsuranceId1").addItem(oGenericTile);
+						} else if (i > 1 && i < 4) {
+							this.getView().byId("flexBoxInsuranceId2").addItem(oGenericTile);
+						} 
+
+					}
+
+				}.bind(this),
+				error: function (e) {}
+			});
+			// ENDE HIER
 
 			this.getLocationData(oReservationContext.START_LOCATION, "FM");
 			this.getLocationData(oReservationContext.END_LOCATION, "TM");
@@ -60,16 +195,34 @@ sap.ui.define([
 			var iCategoryId = oModel.KATEGORIE_ID;
 			if (iId === 2) {
 
-				this.getCarsByCategory(iCategoryId, "initCM");
+				this.getCarsByCategory(iCategoryId, "initCM").then(function(){
+					var oInitialCars = self.getView().getModel("initCM").getData();
+					var oInitialResultSet = oInitialCars.results;
+					
+					for (var i = 0; i < oInitialResultSet.length; i++) {
+					self.addInfosToTiles(oInitialResultSet, i, "initialCarRow", false);
+					}
+				});
+				
+				
+				this.getCarsByCategory(iCategoryId + 1, "upCM").then(function(){
+					var oUpsellCars = self.getView().getModel("upCM").getData();
+					var oUpsellResultSet = oUpsellCars.results;
+
+					for (var x = 0; x < oUpsellResultSet.length; x++) {
+						self.addInfosToTiles(oUpsellResultSet, x, "upsellCarRow", true);
+				}
+				});
+				
+				/**
+				 this.getCarsByCategory(iCategoryId, "initCM");
 				var oInitialCars = this.getView().getModel("initCM").getData();
 				var oInitialResultSet = oInitialCars.results;
 
 				this.getCarsByCategory(iCategoryId + 1, "upCM");
 				var oUpsellCars = this.getView().getModel("upCM").getData();
 				var oUpsellResultSet = oUpsellCars.results;
-
-				//if (this.getView().byId("avatar0").getProperty("title") === "") {
-				// create avatar and text
+				
 				for (var i = 0; i < oInitialResultSet.length; i++) {
 					self.addInfosToTiles(oInitialResultSet, i, "initialCarRow", false);
 				}
@@ -77,6 +230,9 @@ sap.ui.define([
 				for (var x = 0; x < oUpsellResultSet.length; x++) {
 					self.addInfosToTiles(oUpsellResultSet, x, "upsellCarRow", true);
 				}
+				 */
+				
+				
 			}
 			this.getView().byId("tab" + iId).setEnabled(true);
 			this.getView().byId("idIconTabBar2").setSelectedKey("tab" + iId);
@@ -89,8 +245,7 @@ sap.ui.define([
 
 			var iKategorieId = oResultSet[i].KATEGORIE_ID;
 
-			var oBlockLayout = new sap.ui.layout.BlockLayoutCell({
-			});
+			var oBlockLayout = new sap.ui.layout.BlockLayoutCell({});
 
 			var oAvatar = new sap.f.Avatar({
 				src: "img/" + j + ".jpg",
@@ -115,7 +270,7 @@ sap.ui.define([
 				}
 			});
 			if (bIsUpselling) {
-				var iPreisAlt = this.getPricePerCategory(iKategorieId -1);
+				var iPreisAlt = this.getPricePerCategory(iKategorieId - 1);
 				var iPreisNeu = this.getPricePerCategory(iKategorieId);
 				var iAdd = (iPreisNeu - iPreisAlt);
 				oButton = new sap.m.Button({
@@ -180,6 +335,20 @@ sap.ui.define([
 		},
 
 		getCarsByCategory: function (iId, sModel) {
+			return new Promise(function (resolve, reject) {
+				this.getView().getModel().read("/PRODUKTE", {
+					filters: [new sap.ui.model.Filter("KATEGORIE_ID", sap.ui.model.FilterOperator.EQ, iId)],
+					success: function (oData) {
+						resolve(this.getView().getModel(sModel).setData(oData));
+					}.bind(this),
+					error: function (e) {
+						reject(e);
+					}
+				});
+			}.bind(this));
+		},
+		/*
+		getCarsByCategory: function (iId, sModel) {
 			this.getView().getModel().read("/PRODUKTE", {
 				filters: [new sap.ui.model.Filter("KATEGORIE_ID", sap.ui.model.FilterOperator.EQ, iId)],
 				success: function (oData) {
@@ -188,6 +357,7 @@ sap.ui.define([
 				error: function (e) {}
 			});
 		},
+		*/
 
 		getPricePerCategory: function (iId) {
 			this.getView().getModel().read("/KATEGORIE", {
@@ -210,8 +380,8 @@ sap.ui.define([
 				this.getView().getModel("CM").setData(null);
 				this.getView().getModel("initCM").setData(null);
 				this.getView().getModel("upCM").setData(null);
-				this.getView().byId("avatar0").setTitle("");
-				this.getView().byId("avatar1").setTitle("");
+				//this.getView().byId("avatar0").setTitle("");
+				//this.getView().byId("avatar1").setTitle("");
 				this.getRouter().getTargets().display("Startpage", {
 					fromTarget: "Checkin"
 				});
@@ -219,6 +389,12 @@ sap.ui.define([
 				this.getView().byId("tab" + iId).setEnabled(true);
 				this.getView().byId("idIconTabBar2").setSelectedKey("tab" + iId);
 			}
+		},
+		
+		onFinish: function () {
+			this.getRouter().getTargets().display("Finish", {
+				fromTarget: "Checkin"
+			});
 		}
 	});
 
