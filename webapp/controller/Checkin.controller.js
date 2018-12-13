@@ -265,10 +265,20 @@ sap.ui.define([
 
 			var oButton = new sap.m.Button({
 				text: "Dieses Fahrzeug wählen",
-				press: function () {
-					alert("Hello");
+				press: function (oEvent) {
+					var sButtonId = oEvent.getSource();
+					if (oEvent.getSource().getProperty("type") === "Default") {
+						sButtonId.setType("Accept");
+						sButtonId.setText("Fahrzeug ausgewählt");	
+					} else {
+						sButtonId.setType("Default");
+						sButtonId.setText("Fahrzeug auswählen");	
+					}
+					
+
 				}
 			});
+			
 			if (bIsUpselling) {
 				var iPreisAlt = this.getPricePerCategory(iKategorieId - 1);
 				var iPreisNeu = this.getPricePerCategory(iKategorieId);
