@@ -3,11 +3,10 @@ sap.ui.define([
 	"sap/m/Button",
 	"sap/m/Dialog",
 	"sap/m/List",
-	"sap/m/StandardListItem",
 	"qperior/mw_challenge/mw_challenge/model/formatter",
 	"sap/f/Avatar",
 	"sap/m/Text"
-], function (Controller, Button, Dialog, List, Standardlistitem, formatter, Avatar, Text) {
+], function (Controller, Button, Dialog, List, formatter, Avatar, Text) {
 	"use strict";
 
 	return Controller.extend("qperior.mw_challenge.mw_challenge.controller.Checkin", {
@@ -15,6 +14,18 @@ sap.ui.define([
 
 		onInit: function () {
 			this.getRouter().getTarget("Checkin").attachDisplay(this._onObjectMatched, this);
+
+			// offer model
+			var oOM = new sap.ui.model.json.JSONModel();
+			this.getView().setModel(oOM, "OM");
+
+			// temporary accessory model
+			var oTAM = new sap.ui.model.json.JSONModel();
+			this.getView().setModel(oTAM, "TAM");
+			
+			// insurance model
+			var oIM = new sap.ui.model.json.JSONModel();
+			this.getView().setModel(oIM, "IM");
 		},
 
 		onSelectAccessory: function (oEvent) {
@@ -27,9 +38,25 @@ sap.ui.define([
 			}
 
 		},
-		
+
 		onSelectInsurance: function (oEvent) {
 			var iId = oEvent.getSource().getId();
+			
+			var oModelData = this.getView().getModel("IM").getData();
+			var insuranceArray = [];
+			for (var j = 0; j < oModelData.length; j++) {
+				insuranceArray.push("versicherungId" + oModelData[j].VERSICHERUNG_ID);
+			}
+
+			var index = insuranceArray.indexOf(iId);
+			if (index !== -1) {
+				insuranceArray.splice(index, 1);
+			}
+
+			for (var i = 0; i < insuranceArray.length; i++) {
+				sap.ui.getCore().byId(insuranceArray[i]).setBackgroundImage("img/rejected.jpg");
+			}
+
 			var sImage = oEvent.getSource().getProperty("backgroundImage");
 			if (sImage.indexOf("rejected") !== -1) {
 				sap.ui.getCore().byId(iId).setBackgroundImage("img/selected.jpg");
@@ -37,6 +64,57 @@ sap.ui.define([
 				sap.ui.getCore().byId(iId).setBackgroundImage("img/rejected.jpg");
 			}
 
+			var iInsuranceId = 1;
+
+			// get the appropriate insurance (filtering by STARTWERT, ENDWERT & SELBSTBEHALT) and set it in offer model (OM)
+			// https://ikha1315a822.hana.ondemand.com/q_perior/mw_challenge/services/MW_Challenge.xsodata/VERSICHERUNGEN?$filter=STARTWERT gt 50
+			// https://ikha1315a822.hana.ondemand.com/q_perior/mw_challenge/services/MW_Challenge.xsodata/VERSICHERUNGEN?$filter=STARTWERT le 25 and ENDWERT ge 25 and SELBSTBEHALT eq 500
+			var oOfferModel = this.getView().getModel("OM");
+			var oOfferData = oOfferModel.getData();
+			oOfferData.VERSICHERUNG_ID = iInsuranceId;
+
+			oOfferModel.setData(oOfferData);
+
+		},
+
+		setInsurancesAsModel: function (data) {
+			/*
+			Insurance Model
+			-> get all insurance and save in model "IM"
+			*/
+			
+
+			for (var i = 0; i < data.length; i++) {
+				var sVersicherungId = "versicherungId" + data[i].VERSICHERUNG_ID;
+				var oGenericTile = new sap.m.GenericTile({
+					id: sVersicherungId,
+					header: data[i].BEZEICHNUNG,
+					subheader: "Selbstbehalt: CHF " + data[i].SELBSTBEHALT + ".-",
+					frameType: "TwoByOne",
+					backgroundImage: "img/rejected.jpg",
+					press: function (oEvent) {
+						this.onSelectInsurance(oEvent);
+					}.bind(this)
+				});
+
+				var j = i + 1;
+				var oImageContent = new sap.m.ImageContent({
+					src: "img/insurance" + j + ".jpg"
+				});
+				var oTileContent = new sap.m.TileContent({
+					footer: "Für nur CHF " + data[i].PREIS + ".- pro Tag",
+					footerColor: "Error"
+				});
+
+				oTileContent.setContent(oImageContent);
+				oGenericTile.addTileContent(oTileContent);
+				if (i < 2) {
+					this.getView().byId("flexBoxInsuranceId1").addItem(oGenericTile);
+				} else if (i > 1 && i < 4) {
+					this.getView().byId("flexBoxInsuranceId2").addItem(oGenericTile);
+				}
+
+			}
 		},
 
 		_onObjectMatched: function (oEvent) {
@@ -48,6 +126,19 @@ sap.ui.define([
 			var oReservationContext = oEvent.getParameter("data").oContext;
 			oRM.setData(oReservationContext);
 			this.getView().setModel(oRM, "RM");
+			var oOfferModel = this.getView().getModel("OM");
+			var oOfferData = {
+				"ANGEBOT_ID": 2837392,
+				"ANGEBOT_START": oReservationContext.START_TIME, // utc
+				"ANGEBOT_END": oReservationContext.END_TIME, // utc
+				"PRODUKT_ID": null, // int
+				"PERSON_ID": oReservationContext.PERSON_ID, // int
+				"STANDORT_ID_START": oReservationContext.START_LOCATION, // int
+				"STANDORT_ID_END": oReservationContext.END_LOCATION, // int
+				"VERSICHERUNG_ID": null, // int
+				"ZUBEHOER_ID": null // int
+			};
+			oOfferModel.setData(oOfferData);
 
 			/**
 			 *	Person model
@@ -100,7 +191,7 @@ sap.ui.define([
 
 						var j = i + 1;
 						var oImageContent = new sap.m.ImageContent({
-							src: "img/z" + j + ".jpg",
+							src: "img/z" + j + ".jpg"
 						});
 						var oTileContent = new sap.m.TileContent({
 							footer: "Für nur CHF " + resultSet[i].PREIS + ".- pro Tag",
@@ -122,54 +213,6 @@ sap.ui.define([
 				}.bind(this),
 				error: function (e) {}
 			});
-			
-			/*
-			Insurance Model
-			-> get all insurance and save in model "IM"
-			*/
-			var oIM = new sap.ui.model.json.JSONModel();
-			this.getView().setModel(oIM, "IM");
-			
-			this.getView().getModel().read("/VERSICHERUNGEN", {
-				success: function (oData) {
-					var resultSet = oData.results;
-					this.getView().getModel("IM").setData(resultSet);
-
-					for (var i = 0; i < resultSet.length; i++) {
-						var sVersicherungId = "versicherungId" + resultSet[i].VERSICHERUNG_ID;
-						var oGenericTile = new sap.m.GenericTile({
-							id: sVersicherungId,
-							header: resultSet[i].VERSICHERUNG_ID,
-							frameType: "TwoByOne",
-							backgroundImage: "img/rejected.jpg",
-							press: function (oEvent) {
-								this.onSelectInsurance(oEvent);
-							}.bind(this)
-						});
-
-						var j = i + 1;
-						var oImageContent = new sap.m.ImageContent({
-							src: "img/insurance" + j + ".jpg",
-						});
-						var oTileContent = new sap.m.TileContent({
-							footer: "Für nur CHF " + resultSet[i].PREIS + ".- pro Tag",
-							footerColor: "Error"
-						});
-
-						oTileContent.setContent(oImageContent);
-						oGenericTile.addTileContent(oTileContent);
-						if (i < 2) {
-							this.getView().byId("flexBoxInsuranceId1").addItem(oGenericTile);
-						} else if (i > 1 && i < 4) {
-							this.getView().byId("flexBoxInsuranceId2").addItem(oGenericTile);
-						} 
-
-					}
-
-				}.bind(this),
-				error: function (e) {}
-			});
-			// ENDE HIER
 
 			this.getLocationData(oReservationContext.START_LOCATION, "FM");
 			this.getLocationData(oReservationContext.END_LOCATION, "TM");
@@ -187,6 +230,40 @@ sap.ui.define([
 			return sap.ui.core.UIComponent.getRouterFor(this);
 		},
 
+		getCarById: function (id) {
+			var self = this;
+			var oModel = this.getView().getModel();
+			oModel.read("/PRODUKTE(" + id + ")", {
+				success: function (productData) {
+					var iCategory = productData.KATEGORIE_ID;
+					oModel.read("/KATEGORIE(" + iCategory + ")", {
+						success: function (categoryData) {
+							var iPrice = categoryData.PREIS;
+							oModel.read("/VERSICHERUNGEN", {
+								filters: [new sap.ui.model.Filter("STARTWERT", sap.ui.model.FilterOperator.LE, iPrice), new sap.ui.model.Filter(
+									"ENDWERT", sap.ui.model.FilterOperator.GE, iPrice)],
+								sorters: [new sap.ui.model.Sorter("PREIS", false)],
+								success: function (insuranceData) {
+									self.getView().getModel("IM").setData(insuranceData.results);
+									self.setInsurancesAsModel(insuranceData.results);
+								},
+								error: function (e) {
+									// do something
+								}
+							});
+						},
+						error: function (e) {
+							// do something
+						}
+					});
+
+				},
+				error: function (e) {
+					// do something
+				}
+			});
+		},
+
 		onNext: function (oEvent) {
 			var self = this;
 			var sId = this.getView().byId("idIconTabBar2").getSelectedKey();
@@ -195,25 +272,24 @@ sap.ui.define([
 			var iCategoryId = oModel.KATEGORIE_ID;
 			if (iId === 2) {
 
-				this.getCarsByCategory(iCategoryId, "initCM").then(function(){
+				this.getCarsByCategory(iCategoryId, "initCM").then(function () {
 					var oInitialCars = self.getView().getModel("initCM").getData();
 					var oInitialResultSet = oInitialCars.results;
-					
+
 					for (var i = 0; i < oInitialResultSet.length; i++) {
-					self.addInfosToTiles(oInitialResultSet, i, "initialCarRow", false);
+						self.addInfosToTiles(oInitialResultSet, i, "initialCarRow", false);
 					}
 				});
-				
-				
-				this.getCarsByCategory(iCategoryId + 1, "upCM").then(function(){
+
+				this.getCarsByCategory(iCategoryId + 1, "upCM").then(function () {
 					var oUpsellCars = self.getView().getModel("upCM").getData();
 					var oUpsellResultSet = oUpsellCars.results;
 
 					for (var x = 0; x < oUpsellResultSet.length; x++) {
 						self.addInfosToTiles(oUpsellResultSet, x, "upsellCarRow", true);
-				}
+					}
 				});
-				
+
 				/**
 				 this.getCarsByCategory(iCategoryId, "initCM");
 				var oInitialCars = this.getView().getModel("initCM").getData();
@@ -231,11 +307,43 @@ sap.ui.define([
 					self.addInfosToTiles(oUpsellResultSet, x, "upsellCarRow", true);
 				}
 				 */
-				
-				
+
 			}
+
+			if (iId === 3) {
+				var sSelectedCarIdLong = this.getView().getModel("OM").getData().PRODUKT_ID;
+				var sSelectedCarIdShort = sSelectedCarIdLong.substring(5);
+				var iSelectedCarId = parseInt(sSelectedCarIdShort, 10);
+				var oSelectedCarData = this.getCarById(iSelectedCarId);
+			}
+
 			this.getView().byId("tab" + iId).setEnabled(true);
 			this.getView().byId("idIconTabBar2").setSelectedKey("tab" + iId);
+		},
+
+		addInfoToOfferModel: function (oOfferObject) {
+			var oOfferModel = this.getView().getModel("OM");
+			var oOfferModelData = oOfferModel.getData();
+
+			var oOfferData = {
+				"ANGEBOT_ID": 8273917382,
+				"ANGEBOT_START": oOfferModelData.ANGEBOT_START, // utc
+				"ANGEBOT_END": oOfferModelData.ANGEBOT_ENDE, // utc
+				"PRODUKT_ID": null, // int
+				"PERSON_ID": oOfferModelData.PERSON_ID, // int
+				"STANDORT_ID_START": oOfferModelData.STANDORT_ID_START, // int
+				"STANDORT_ID_END": oOfferModelData.STANDORT_ID_END, // int
+				"VERSICHERUNG_ID": null // int
+			};
+			// get the product_id
+			if (oOfferObject && oOfferObject.PRODUKT_ID) {
+				oOfferData.PRODUKT_ID = oOfferObject.PRODUKT_ID;
+			} else if (oOfferModelData && oOfferModelData.PRODUKT_ID) {
+				oOfferData.PRODUKT_ID = oOfferModelData.PRODUKT_ID;
+			}
+
+			// get the 
+			oOfferModel.setData(oOfferData);
 		},
 
 		addInfosToTiles: function (oResultSet, iIndex, oElement, bIsUpselling) {
@@ -264,33 +372,65 @@ sap.ui.define([
 			});
 
 			var oButton = new sap.m.Button({
-				text: "Dieses Fahrzeug wählen",
+				id: "carId" + j,
+				text: "Fahrzeug auswählen",
 				press: function (oEvent) {
+					var aCarIds = [];
+					var sCarId = this.getId();
+					var oOfferObject = {
+						PRODUKT_ID: sCarId
+					};
+					self.addInfoToOfferModel(oOfferObject);
+					for (var k = 1; k < 15; k++) {
+						if (sap.ui.getCore().byId("carId" + k) === undefined) {
+							continue;
+						} else if ("carId" + k === oEvent.getSource().getId()) {
+							continue;
+						} else {
+							aCarIds.push("carId" + k);
+						}
+					}
+
+					for (var l = 0; l < aCarIds.length; l++) {
+						sap.ui.getCore().byId(aCarIds[l]).setType("Default");
+						sap.ui.getCore().byId(aCarIds[l]).setText("Fahrzeug auswählen");
+					}
+
 					var sButtonId = oEvent.getSource();
 					if (oEvent.getSource().getProperty("type") === "Default") {
 						sButtonId.setType("Accept");
-						sButtonId.setText("Fahrzeug ausgewählt");	
+						sButtonId.setText("Fahrzeug ausgewählt");
 					} else {
 						sButtonId.setType("Default");
-						sButtonId.setText("Fahrzeug auswählen");	
+						sButtonId.setText("Fahrzeug auswählen");
 					}
-					
 
 				}
 			});
-			
+
+			/*
 			if (bIsUpselling) {
-				var iPreisAlt = this.getPricePerCategory(iKategorieId - 1);
-				var iPreisNeu = this.getPricePerCategory(iKategorieId);
-				var iAdd = (iPreisNeu - iPreisAlt);
-				oButton = new sap.m.Button({
-					text: "Diese Fahrzeug wählen für +" + iAdd,
-					press: function () {
-						alert("Hello");
-					}
+				var iPreisAlt = this.getPricePerCategory(iKategorieId - 1).then(function () {
+					var iPreisNeu = self.getPricePerCategory(iKategorieId).then(function () {
+						var iAdd = (iPreisNeu - iPreisAlt);
+						oButton = new sap.m.Button({
+							id: "carUpId" + j,
+							text: "Dieses Fahrzeug wählen für +" + iAdd,
+							press: function (oEvent) {
+								var sButtonId = oEvent.getSource();
+								if (oEvent.getSource().getProperty("type") === "Default") {
+									sButtonId.setType("Accept");
+									sButtonId.setText("Fahrzeug ausgewählt");
+								} else {
+									sButtonId.setType("Default");
+									sButtonId.setText("Fahrzeug auswählen");
+								}
+							}
+						});
+					});
 				});
 
-			}
+			}*/
 
 			// placing it into our view
 			this.getView().byId(oElement).addContent(oBlockLayout);
@@ -370,13 +510,17 @@ sap.ui.define([
 		*/
 
 		getPricePerCategory: function (iId) {
-			this.getView().getModel().read("/KATEGORIE", {
-				filters: [new sap.ui.model.Filter("KATEGORIE_ID", sap.ui.model.FilterOperator.EQ, iId)],
-				success: function (oData) {
-					return oData.results[0].PREIS;
-				}.bind(this),
-				error: function (e) {}
-			});
+			return new Promise(function (resolve, reject) {
+				this.getView().getModel().read("/KATEGORIE", {
+					filters: [new sap.ui.model.Filter("KATEGORIE_ID", sap.ui.model.FilterOperator.EQ, iId)],
+					success: function (oData) {
+						resolve(oData.results[0].PREIS);
+					}.bind(this),
+					error: function (e) {
+						reject(e);
+					}
+				});
+			}.bind(this));
 		},
 
 		onReturnBack: function () {
@@ -390,8 +534,6 @@ sap.ui.define([
 				this.getView().getModel("CM").setData(null);
 				this.getView().getModel("initCM").setData(null);
 				this.getView().getModel("upCM").setData(null);
-				//this.getView().byId("avatar0").setTitle("");
-				//this.getView().byId("avatar1").setTitle("");
 				this.getRouter().getTargets().display("Startpage", {
 					fromTarget: "Checkin"
 				});
@@ -400,12 +542,118 @@ sap.ui.define([
 				this.getView().byId("idIconTabBar2").setSelectedKey("tab" + iId);
 			}
 		},
-		
+
 		onFinish: function () {
 			this.getRouter().getTargets().display("Finish", {
 				fromTarget: "Checkin"
 			});
+		},
+
+		getSelectedAccessories: function () {
+			var aSelectedAccessories = [];
+			for (var i = 1; i < 7; i++) {
+				if (sap.ui.getCore().byId("zubehoerId" + i).getBackgroundImage().indexOf("selected") > -1) {
+					aSelectedAccessories.push(i);
+				}
+			}
+			return aSelectedAccessories;
+		},
+
+		saveOfferAccessories: function (data) {
+			var oModel = this.getView().getModel();
+			oModel.create("/ANGEBOTZUBEHOER", data, {
+				success: function (dataAZS) {
+					// do nothing
+				},
+				error: function (dataAZE) {
+					// do nothing
+				}
+			});
+		},
+
+		finishOffer: function () {
+			this.getRouter().getTargets().display("Finish", {
+				fromTarget: "Checkin"
+			});
+		},
+
+		onSaveOffer: function () {
+			/*
+				=> get all relevant data and save it in collection "/ANGEBOTE" as final offer
+			*/
+			var self = this;
+			var iProductId;
+			for (var i = 1; i < 15; i++) {
+				if (sap.ui.getCore().byId("carId" + i) !== undefined) {
+					if (sap.ui.getCore().byId("carId" + i).getType() === "Accept") {
+						iProductId = i;
+					}
+				}
+			}
+
+			var iZubehoerId = [];
+			for (var j = 1; j < 7; j++) {
+				if (sap.ui.getCore().byId("zubehoerId" + j) !== undefined) {
+					if (sap.ui.getCore().byId("zubehoerId" + j).getBackgroundImage().indexOf("selected") > 0) {
+						iZubehoerId.push(j);
+					}
+				}
+			}
+
+			var iVersicherungId;
+			for (var k = 1; k < 5; k++) {
+				if (sap.ui.getCore().byId("versicherungId" + k).getBackgroundImage().indexOf("selected") > 0) {
+					iVersicherungId = k;
+				}
+			}
+
+			var iPersonId = this.getView().getModel("PM").getData().PERSON_ID;
+			var dStartTime = this.getView().getModel("RM").getData().START_TIME;
+			var dEndTime = this.getView().getModel("RM").getData().END_TIME;
+			var iStartLocation = this.getView().getModel("RM").getData().START_LOCATION;
+			var iEndLocation = this.getView().getModel("RM").getData().END_LOCATION;
+
+			var oData = {
+				"ANGEBOT_ID": 8273917382,
+				"ANGEBOT_START": dStartTime, // utc
+				"ANGEBOT_END": dEndTime, // utc
+				"PRODUKT_ID": iProductId, // int
+				"PERSON_ID": iPersonId, // int
+				"STANDORT_ID_START": iStartLocation, // int
+				"STANDORT_ID_END": iEndLocation, // int
+				"VERSICHERUNG_ID": iVersicherungId // int
+			};
+
+			var aSelectedAccessories = this.getSelectedAccessories();
+
+			var oModel = this.getView().getModel();
+			oModel.create("/ANGEBOTE", oData, {
+				success: function (data) {
+					oModel.read("/ANGEBOTE", {
+						success: function (dataO) {
+							var oDataSet = dataO.results;
+							var iIndexOfLastObject = oDataSet.length - 1;
+							var iOfferIdOfLastObject = oDataSet[iIndexOfLastObject].ANGEBOT_ID;
+							for (var l = 0; l < aSelectedAccessories.length; l++) {
+								var oAccessories = {
+									ANGEBOTZUBEHOER_ID: 33747323299,
+									ANGEBOT_ID: iOfferIdOfLastObject,
+									ZUBEHOER_ID: aSelectedAccessories[l]
+								};
+								self.saveOfferAccessories(oAccessories);
+								self.finishOffer();
+							}
+						},
+						error: function (e) {
+							// do nothing
+						}
+					});
+				},
+				error: function (e) {}
+			});
+
 		}
+
 	});
 
 });

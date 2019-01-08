@@ -91,7 +91,7 @@
 								</IconTabFilter>
 								<IconTabSeparator icon="sap-icon://open-command-field"/>
 								<IconTabFilter id="tab4" icon="sap-icon://begin" iconColor="Positive" design="Horizontal" count="Schritt 4" text="Zubehörauswahl" key="tab4"
-									enabled="false">
+									enabled="false"> 
 									<Panel width="auto" class="sapUiResponsiveMargin">
 										<headerToolbar>
 											<Toolbar height="3rem">
@@ -113,7 +113,7 @@
 									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
 										<items>
 											<Button icon="sap-icon://nav-back" text="Zurück" press="onReturnBack"/>
-											<Button type="Accept" icon="sap-icon://complete" text="Abschliessen" press="onFinish"/>
+											<Button type="Accept" icon="sap-icon://complete" text="Abschliessen" press="onSaveOffer"/>
 										</items>
 									</FlexBox>
 								</IconTabFilter>

@@ -8,7 +8,10 @@ sap.ui.define([
 	return UIComponent.extend("qperior.mw_challenge.mw_challenge.Component", {
 
 		metadata: {
-			manifest: "json"
+			manifest: "json",
+			config: {
+				fullWidth: true
+			}
 
 		},
 
