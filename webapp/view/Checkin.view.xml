@@ -57,6 +57,18 @@
 											</l:VerticalLayout>
 										</items>
 									</FlexBox>
+									<VBox class="sapUiSmallMargin" id="specialCarBox" visible="false">
+										<form:SimpleForm title="Heute haben wir sonniges Wetter, dies ist unsere Empfehlung"></form:SimpleForm>
+									</VBox>
+									<FlexBox height="100%" alignItems="Stretch" justifyContent="Center" width="100%" class="columns">
+										<items>
+											<l:VerticalLayout width="800px">
+												<l:BlockLayout>
+													<l:BlockLayoutRow id="specialCarRow"></l:BlockLayoutRow>
+												</l:BlockLayout>
+											</l:VerticalLayout>
+										</items>
+									</FlexBox>
 									<FlexBox alignItems="Start" justifyContent="SpaceBetween">
 										<items>
 											<Button icon="sap-icon://nav-back" text="Zurück" press="onReturnBack"/>

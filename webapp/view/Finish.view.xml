@@ -4,7 +4,7 @@
 		<pages>
 			<Page title="Title">
 				<content>
-					
+					<Text text="test"/>
 				</content>
 			</Page>
 		</pages>

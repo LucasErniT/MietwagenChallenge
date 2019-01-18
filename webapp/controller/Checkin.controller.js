@@ -22,10 +22,38 @@ sap.ui.define([
 			// temporary accessory model
 			var oTAM = new sap.ui.model.json.JSONModel();
 			this.getView().setModel(oTAM, "TAM");
-			
+
 			// insurance model
 			var oIM = new sap.ui.model.json.JSONModel();
 			this.getView().setModel(oIM, "IM");
+
+			this.oWeatherJson = {
+				"Flughafen Frankfurt am Main": {
+					text: "sun",
+					c: "25"
+				},
+				"Madrid Flughafen": {
+					text: "rain",
+					c: "10"
+				},
+				"Berlin Flughafen": {
+					text: "sun",
+					c: "15"
+				},
+				"Zürich Flughafen": {
+					text: "sun",
+					c: "5"
+				},
+				"München Flughafen": {
+					text: "rain",
+					c: "17"
+				}
+			};
+
+		},
+
+		onAfterRendering: function () {
+			console.log(this.getPrice(1, [1, 0, 1000], [1, 2]));
 		},
 
 		onSelectAccessory: function (oEvent) {
@@ -39,9 +67,27 @@ sap.ui.define([
 
 		},
 
+		onWeatherRead: function (oLocation) {
+			return new Promise(function (resolve, reject) {
+				var sUrl = 'https://api.apixu.com/v1/current.json?key=32381fe47fc240718e182845191701&q=' + "Quito";
+				var aData = jQuery.ajax({
+					type: "GET",
+					url: sUrl,
+					dataType: "json",
+					success: function (data) {
+						resolve(data);
+					}
+				});
+			});
+		},
+
+		getWeatherByLocation: function (sLocation) {
+			return this.oWeatherJson[sLocation];
+		},
+
 		onSelectInsurance: function (oEvent) {
 			var iId = oEvent.getSource().getId();
-			
+
 			var oModelData = this.getView().getModel("IM").getData();
 			var insuranceArray = [];
 			for (var j = 0; j < oModelData.length; j++) {
@@ -82,7 +128,6 @@ sap.ui.define([
 			Insurance Model
 			-> get all insurance and save in model "IM"
 			*/
-			
 
 			for (var i = 0; i < data.length; i++) {
 				var sVersicherungId = "versicherungId" + data[i].VERSICHERUNG_ID;
@@ -159,6 +204,9 @@ sap.ui.define([
 
 			var oUpCM = new sap.ui.model.json.JSONModel();
 			this.getView().setModel(oUpCM, "upCM");
+
+			var oSpecialCM = new sap.ui.model.json.JSONModel();
+			this.getView().setModel(oSpecialCM, "specialCM");
 
 			var oFM = new sap.ui.model.json.JSONModel();
 			this.getView().setModel(oFM, "FM");
@@ -290,23 +338,39 @@ sap.ui.define([
 					}
 				});
 
+				var oFromModel = this.getView().getModel("FM");
+				var oToModel = this.getView().getModel("TM");
+
+				if (this.getWeatherByLocation(oFromModel.getProperty("/BEZEICHNUNG")).text === "sun" || this.getWeatherByLocation(oToModel.getProperty(
+						"/BEZEICHNUNG")).text === "sun") {
+					this.getView().byId("specialCarBox").setVisible(true);
+					this.getCarsByCategory(6, "specialCM").then(function () {
+						var oSpecialCars = self.getView().getModel("specialCM").getData();
+						var oSpecialResultSet = oSpecialCars.results;
+
+						for (var x = 0; x < oSpecialResultSet.length; x++) {
+							self.addInfosToTiles(oSpecialResultSet, x, "specialCarRow", true);
+						}
+					});
+				}
+
 				/**
-				 this.getCarsByCategory(iCategoryId, "initCM");
-				var oInitialCars = this.getView().getModel("initCM").getData();
-				var oInitialResultSet = oInitialCars.results;
+									 this.getCarsByCategory(iCategoryId, "initCM");
+									var oInitialCars = this.getView().getModel("initCM").getData();
+									var oInitialResultSet = oInitialCars.results;
 
-				this.getCarsByCategory(iCategoryId + 1, "upCM");
-				var oUpsellCars = this.getView().getModel("upCM").getData();
-				var oUpsellResultSet = oUpsellCars.results;
+									this.getCarsByCategory(iCategoryId + 1, "upCM");
+									var oUpsellCars = this.getView().getModel("upCM").getData();
+									var oUpsellResultSet = oUpsellCars.results;
 				
-				for (var i = 0; i < oInitialResultSet.length; i++) {
-					self.addInfosToTiles(oInitialResultSet, i, "initialCarRow", false);
-				}
+									for (var i = 0; i < oInitialResultSet.length; i++) {
+										self.addInfosToTiles(oInitialResultSet, i, "initialCarRow", false);
+									}
 
-				for (var x = 0; x < oUpsellResultSet.length; x++) {
-					self.addInfosToTiles(oUpsellResultSet, x, "upsellCarRow", true);
-				}
-				 */
+									for (var x = 0; x < oUpsellResultSet.length; x++) {
+										self.addInfosToTiles(oUpsellResultSet, x, "upsellCarRow", true);
+									}
+									 */
 
 			}
 
@@ -408,7 +472,6 @@ sap.ui.define([
 				}
 			});
 
-			/*
 			if (bIsUpselling) {
 				var iPreisAlt = this.getPricePerCategory(iKategorieId - 1).then(function () {
 					var iPreisNeu = self.getPricePerCategory(iKategorieId).then(function () {
@@ -430,7 +493,7 @@ sap.ui.define([
 					});
 				});
 
-			}*/
+			}
 
 			// placing it into our view
 			this.getView().byId(oElement).addContent(oBlockLayout);
@@ -528,6 +591,7 @@ sap.ui.define([
 			var iId = parseInt(sId.slice(-1), 10) - 1;
 			if (sId === "tab2") {
 				this.getView().byId("upsellCarRow").removeAllContent();
+				this.getView().byId("specialCarRow").removeAllContent();
 				this.getView().byId("initialCarRow").removeAllContent();
 			}
 			if (sId === "tab1") {
@@ -650,6 +714,32 @@ sap.ui.define([
 					});
 				},
 				error: function (e) {}
+			});
+
+		},
+
+		getPrice: function (iKategorieId, aVersicherung, aZubehörArray) {
+			var iPreis;
+			this.getView().getModel().read("/KATEGORIE(" + iKategorieId + ")", {
+				success: function (oData) {
+					iPreis = oData.PREIS;
+					this.getView().getModel().read("/VERSICHERUNGEN(VERSICHERUNG_ID=1,STARTWERT=0d,SELBSTBEHALT=1000d)", {
+						success: function (oData) {
+							var iVsPreis = oData.PREIS;
+							iPreis = parseInt(iVsPreis, 10) + iPreis;
+							aZubehörArray.forEach(function (iZubehörId) {
+								this.getView().getModel().read("/ZUBEHOER(" + iZubehörId + ")", {
+									success: function (oData) {
+										var iZbPreis = oData.PREIS;
+										iPreis = parseInt(iZbPreis, 10) + iPreis;
+										console.log(iPreis);
+									}
+								});
+							}.bind(this));
+							return iPreis;
+						}.bind(this)
+					});
+				}.bind(this)
 			});
 
 		}
