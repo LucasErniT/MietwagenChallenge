@@ -590,9 +590,9 @@ sap.ui.define([
 			var sId = this.getView().byId("idIconTabBar2").getSelectedKey();
 			var iId = parseInt(sId.slice(-1), 10) - 1;
 			if (sId === "tab2") {
-				this.getView().byId("upsellCarRow").removeAllContent();
-				this.getView().byId("specialCarRow").removeAllContent();
-				this.getView().byId("initialCarRow").removeAllContent();
+				this.getView().removeAllContent();
+				this.getView().removeAllContent();
+				this.getView().removeAllContent();
 			}
 			if (sId === "tab1") {
 				this.getView().getModel("CM").setData(null);
@@ -676,16 +676,17 @@ sap.ui.define([
 			var dEndTime = this.getView().getModel("RM").getData().END_TIME;
 			var iStartLocation = this.getView().getModel("RM").getData().START_LOCATION;
 			var iEndLocation = this.getView().getModel("RM").getData().END_LOCATION;
+			var dDateNow = new Date();
 
 			var oData = {
 				"ANGEBOT_ID": 8273917382,
 				"ANGEBOT_START": dStartTime, // utc
 				"ANGEBOT_END": dEndTime, // utc
 				"PRODUKT_ID": iProductId, // int
-				"PERSON_ID": iPersonId, // int
-				"STANDORT_ID_START": iStartLocation, // int
+				"PERSON_ID": iPersonId, // int n, // int
 				"STANDORT_ID_END": iEndLocation, // int
-				"VERSICHERUNG_ID": iVersicherungId // int
+				"VERSICHERUNG_ID": iVersicherungId, // int
+				"ZEITSTEMPEL": dDateNow
 			};
 
 			var aSelectedAccessories = this.getSelectedAccessories();
@@ -742,6 +743,14 @@ sap.ui.define([
 				}.bind(this)
 			});
 
+		},
+		
+		getPXLToken: function() {
+			
+		},
+		
+		getPXLCode: function() {
+			
 		}
 
 	});
